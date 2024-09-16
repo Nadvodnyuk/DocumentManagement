@@ -1,6 +1,7 @@
 package org.example.backend.service;
 
 import org.example.backend.dao.DocumentVersionDAO;
+import org.example.backend.dto.DocumentVersionCreateDTO;
 import org.example.backend.model.Document;
 import org.example.backend.model.DocumentVersion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,13 @@ import java.util.List;
 @Service
 public class DocumentVersionService {
     private final DocumentVersionDAO documentVersionDAO;
+    private final DocumentService documentService;
 
     @Autowired
-    public DocumentVersionService(DocumentVersionDAO documentVersionDAO) {
+    public DocumentVersionService(DocumentVersionDAO documentVersionDAO,
+                                  DocumentService documentService) {
         this.documentVersionDAO = documentVersionDAO;
+        this.documentService = documentService;
     }
 
     @Transactional(readOnly = true)
@@ -31,22 +35,38 @@ public class DocumentVersionService {
     }
 
     @Transactional
-    public void saveDocument(MultipartFile file,
+    public void saveDocumentVersion(MultipartFile file,
                              String versionAuthor,
-                             Document document) throws IOException {
-        if (file.isEmpty() || versionAuthor == null || document == null) {
+                             int documentId) throws IOException {
+        if (file.isEmpty() || versionAuthor == null || documentId < 0) {
             throw new IllegalArgumentException("Invalid input data");
         }
 
+        Document document = documentService.findDocumentById(documentId);
+
         DocumentVersion documentVersion = new DocumentVersion();
+
         documentVersion.setContent(file.getBytes());
         documentVersion.setVersionAuthor(versionAuthor);
         documentVersion.setDocument(document);
+
         documentVersionDAO.save(documentVersion);
     }
 
     @Transactional
-    public void save(DocumentVersion documentVersion) {
+    public void save(MultipartFile file,
+                     DocumentVersionCreateDTO documentVersionCreateDTO)  throws IOException{
+        if (file.isEmpty() || documentVersionCreateDTO == null) {
+            throw new IllegalArgumentException("Invalid input data");
+        }
+        Document document = documentService.findDocumentById(documentVersionCreateDTO.getDocumentId());
+
+        DocumentVersion documentVersion = new DocumentVersion();
+
+        documentVersion.setContent(file.getBytes());
+        documentVersion.setVersionAuthor(document.getAuthor());
+        documentVersion.setDocument(document);
+
         documentVersionDAO.save(documentVersion);
     }
 

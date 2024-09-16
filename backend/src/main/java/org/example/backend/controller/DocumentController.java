@@ -1,12 +1,17 @@
 package org.example.backend.controller;
 
+import org.example.backend.dto.DocumentCreateDTO;
+import org.example.backend.dto.DocumentResponseDTO;
 import org.example.backend.model.Document;
 import org.example.backend.service.DocumentService;
+import org.example.backend.service.DocumentVersionService;
+import org.example.backend.service.RegCardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -15,16 +20,22 @@ import java.util.List;
 @RequestMapping("/documents")
 public class DocumentController {
     private final DocumentService documentService;
+    private final DocumentVersionService documentVersionService;
+    private final RegCardService regCardService;
 
     @Autowired
-    public DocumentController(DocumentService documentService) {
+    public DocumentController(DocumentService documentService,
+                              DocumentVersionService documentVersionService,
+                              RegCardService regCardService) {
         this.documentService = documentService;
+        this.documentVersionService = documentVersionService;
+        this.regCardService = regCardService;
     }
 
     @GetMapping()
-    public ResponseEntity<List<Document>> index() {
+    public ResponseEntity<List<DocumentResponseDTO>> index() {
         try {
-            List<Document> documents = documentService.findAll();
+            List<DocumentResponseDTO> documents = documentService.findAll();
             return new ResponseEntity<>(documents, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -33,9 +44,9 @@ public class DocumentController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Document> show(@PathVariable("id") int id) {
+    public ResponseEntity<DocumentResponseDTO> show(@PathVariable("id") int id) {
         try {
-            Document document = documentService.findById(id);
+            DocumentResponseDTO document = documentService.findById(id);
             return new ResponseEntity<>(document, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -44,14 +55,24 @@ public class DocumentController {
     }
 
 
-    //!!!!!!!!! поменять, чтобы тут было с созданием новых экземпларов в docVer и regCard
     @PostMapping()
-    public ResponseEntity<String> create(@RequestBody @Valid Document document, BindingResult bindingResult) {
+    public ResponseEntity<String> create(@RequestParam("file") MultipartFile file,
+                                         @RequestBody @Valid DocumentCreateDTO documentCreateDTO,
+                                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>("Invalid document data", HttpStatus.BAD_REQUEST);
         }
         try {
-            documentService.save(document);
+            int documentId = documentService.saveDocument(documentCreateDTO.getDocumentName(),
+                    documentCreateDTO.getAuthor());
+
+            documentVersionService.saveDocumentVersion(file,
+                    documentCreateDTO.getAuthor(),
+                    documentId);
+            regCardService.saveRegCard(documentCreateDTO.getDocumentIntroNumber(),
+                    documentCreateDTO.getDateIntro(),
+                    documentId);
+
             return new ResponseEntity<>("Document created successfully", HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

@@ -31,6 +31,14 @@ public class RegCardDAO {
         return session.get(RegCard.class, id);
     }
 
+    @Transactional(readOnly = true)
+    public RegCard showByDocumentId(int documentId) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("from RegCard where document.id = :documentId", RegCard.class)
+                .setParameter("documentId", documentId)
+                .uniqueResult();
+    }
+
     @Transactional
     public void save(RegCard regCard) {
         Session session = sessionFactory.getCurrentSession();

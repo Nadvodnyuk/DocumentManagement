@@ -1,5 +1,6 @@
 package org.example.backend.controller;
 
+import org.example.backend.dto.DocumentVersionCreateDTO;
 import org.example.backend.model.DocumentVersion;
 import org.example.backend.service.DocumentVersionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -44,13 +46,14 @@ public class DocumentVersionController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> create(@RequestBody @Valid DocumentVersion documentVersion,
+    public ResponseEntity<String> create(@RequestParam("file") MultipartFile file,
+                                         @RequestBody @Valid DocumentVersionCreateDTO documentVersionCreateDTO,
                                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>("Invalid document version data", HttpStatus.BAD_REQUEST);
         }
         try {
-            documentVersionService.save(documentVersion);
+            documentVersionService.save(file, documentVersionCreateDTO);
             return new ResponseEntity<>("Document version created successfully", HttpStatus.CREATED);
         } catch (Exception e) {
             e.printStackTrace();

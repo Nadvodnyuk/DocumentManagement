@@ -1,5 +1,7 @@
 package org.example.backend.controller;
 
+import org.example.backend.dto.RegCardResponseDTO;
+import org.example.backend.dto.RegCardUpdateDTO;
 import org.example.backend.model.RegCard;
 import org.example.backend.service.RegCardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/regCards")
@@ -22,9 +25,9 @@ public class RegCardController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<RegCard>> index() {
+    public ResponseEntity<List<RegCardResponseDTO>> index() {
         try {
-            List<RegCard> regCards = regCardService.findAll();
+            List<RegCardResponseDTO> regCards = regCardService.findAll();
             return new ResponseEntity<>(regCards, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
@@ -43,6 +46,23 @@ public class RegCardController {
         }
     }
 
+
+    // скорее всего не нужно, это до тестов
+    @GetMapping("/document/{documentId}")
+    public ResponseEntity<?> findByDocumentId(@PathVariable("documentId") int documentId) {
+        try {
+            RegCardResponseDTO regCardDTO = regCardService.findByDocumentId(documentId);
+            return new ResponseEntity<>(regCardDTO, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
     @PostMapping()
     public ResponseEntity<String> create(@RequestBody @Valid RegCard regCard, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -58,12 +78,13 @@ public class RegCardController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable("id") int id, @RequestBody @Valid RegCard regCard, BindingResult bindingResult) {
+    public ResponseEntity<String> update(@RequestBody @Valid RegCardUpdateDTO regCardUpdateDTO,
+                                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>("Invalid registration card data", HttpStatus.BAD_REQUEST);
         }
         try {
-            regCardService.update(id, regCard);
+            regCardService.update(regCardUpdateDTO.getRegCardId(), regCardUpdateDTO);
             return new ResponseEntity<>("Registration card updated successfully", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
