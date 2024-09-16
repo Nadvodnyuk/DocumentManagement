@@ -18,4 +18,39 @@ public class DocumentDAO {
     public DocumentDAO(SessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
+
+    @Transactional(readOnly = true)
+    public List<Document> index() {
+        Session session = sessionFactory.getCurrentSession();
+
+        return session.createQuery("select p from Document p", Document.class)
+                .getResultList();
+    }
+
+    @Transactional(readOnly = true)
+    public Document show(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Document.class, id);
+    }
+
+    @Transactional
+    public void save(Document document) {
+        Session session = sessionFactory.getCurrentSession();
+        session.save(document);
+    }
+
+    @Transactional
+    public void update(int id, Document updatedDocument) {
+        Session session = sessionFactory.getCurrentSession();
+        Document documentToBeUpdated = session.get(Document.class, id);
+
+        documentToBeUpdated.setDocumentName(updatedDocument.getDocumentName());
+        documentToBeUpdated.setAuthor(updatedDocument.getAuthor());
+    }
+
+    @Transactional
+    public void delete(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        session.remove(session.get(Document.class, id));
+    }
 }
