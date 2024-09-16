@@ -19,7 +19,7 @@ public class Document {
     private String documentName;
 
 
-    @Column(name = "Author")
+    @Column(name = "author")
     @NotEmpty(message = "Author's login should not be empty")
     @Size(min = 2, max =50, message = "Author's login should be between 2 and 50 characters")
     private String author;
@@ -28,7 +28,7 @@ public class Document {
 
     }
 
-    public Document(String name, String author) {
+    public Document(String documentName, String author) {
         this.documentName = documentName;
         this.author = author;
     }
