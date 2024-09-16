@@ -8,13 +8,13 @@ import javax.validation.constraints.Size;
 @Table(name = "DocumentVersion")
 public class DocumentVersion {
     @Id
-    @Column(name = "documentId")
+    @Column(name = "documentVersionId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int documentVersionId;
 
     @ManyToOne
     @JoinColumn(name = "documentId")
-    private Document documentId;
+    private Document document;
 
     @Column(name = "versionAuthor")
     @NotEmpty(message = "Author's login should not be empty")
@@ -34,7 +34,7 @@ public class DocumentVersion {
                            String versionAuthor,
                            byte[] content) {
         this.documentVersionId = documentVersionId;
-        this.documentId = documentId;
+        this.document = documentId;
         this.versionAuthor = versionAuthor;
         this.content = content;
     }
@@ -47,12 +47,12 @@ public class DocumentVersion {
         this.documentVersionId = documentVersionId;
     }
 
-    public Document getDocumentId() {
-        return documentId;
+    public Document getDocument() {
+        return document;
     }
 
-    public void setDocumentId(Document documentId) {
-        this.documentId = documentId;
+    public void setDocument(Document documentId) {
+        this.document = documentId;
     }
 
     public String getVersionAuthor() {
@@ -75,7 +75,7 @@ public class DocumentVersion {
     public String toString() {
         return "DocumentVersion{" +
                 "documentVersionId=" + documentVersionId +
-                ", documentId='" + documentId +
+                ", document='" + document +
                 ", versionAuthor=" + versionAuthor +
                 ", content=" + content +
                 '}';

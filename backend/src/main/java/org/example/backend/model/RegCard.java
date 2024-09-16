@@ -14,7 +14,7 @@ public class RegCard {
 
     @OneToOne
     @JoinColumn(name = "documentId")
-    private Document documentId;
+    private Document document;
 
     @Column(name = "documentIntroNumber")
     @NotEmpty(message = "documentIntroNumber should not be empty")
@@ -25,11 +25,9 @@ public class RegCard {
     private String documentExternNumber;
 
     @Column(name = "dateIntro")
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dateIntro;
 
     @Column(name = "dateExtern")
-    @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime dateExtern;
 
     public RegCard() {
@@ -43,7 +41,7 @@ public class RegCard {
                    LocalDateTime dateIntro,
                    LocalDateTime dateExtern) {
         this.regCardId = regCardId;
-        this.documentId = documentId;
+        this.document = documentId;
         this.documentIntroNumber = documentIntroNumber;
         this.documentExternNumber = documentExternNumber;
         this.dateIntro = dateIntro;
@@ -63,12 +61,12 @@ public class RegCard {
         this.regCardId = regCardId;
     }
 
-    public Document getDocumentId() {
-        return documentId;
+    public Document getDocument() {
+        return document;
     }
 
-    public void setDocumentId(Document documentId) {
-        this.documentId = documentId;
+    public void setDocument(Document documentId) {
+        this.document = documentId;
     }
 
     public String getDocumentIntroNumber() {
@@ -107,7 +105,7 @@ public class RegCard {
     public String toString() {
         return "DocumentVersion{" +
                 "regCardId=" + regCardId +
-                ", documentId='" + documentId +
+                ", documentId='" + document +
                 ", documentIntroNumber=" + documentIntroNumber +
                 ", documentExternNumber=" + documentExternNumber +
                 ", dateIntro=" + dateIntro +

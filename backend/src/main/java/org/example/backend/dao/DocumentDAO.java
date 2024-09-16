@@ -22,9 +22,7 @@ public class DocumentDAO {
     @Transactional(readOnly = true)
     public List<Document> index() {
         Session session = sessionFactory.getCurrentSession();
-
-        return session.createQuery("select p from Document p", Document.class)
-                .getResultList();
+        return session.createQuery("from Document", Document.class).getResultList();
     }
 
     @Transactional(readOnly = true)
@@ -44,13 +42,24 @@ public class DocumentDAO {
         Session session = sessionFactory.getCurrentSession();
         Document documentToBeUpdated = session.get(Document.class, id);
 
-        documentToBeUpdated.setDocumentName(updatedDocument.getDocumentName());
-        documentToBeUpdated.setAuthor(updatedDocument.getAuthor());
+        if (documentToBeUpdated != null) {
+            documentToBeUpdated.setDocumentName(updatedDocument.getDocumentName());
+            documentToBeUpdated.setAuthor(updatedDocument.getAuthor());
+            session.update(documentToBeUpdated);
+        } else {
+            throw new IllegalArgumentException("Document with ID " + id + " not found");
+        }
     }
 
     @Transactional
     public void delete(int id) {
         Session session = sessionFactory.getCurrentSession();
-        session.remove(session.get(Document.class, id));
+        Document documentToBeDeleted = session.get(Document.class, id);
+
+        if (documentToBeDeleted != null) {
+            session.remove(documentToBeDeleted);
+        } else {
+            throw new IllegalArgumentException("Document with ID " + id + " not found");
+        }
     }
 }

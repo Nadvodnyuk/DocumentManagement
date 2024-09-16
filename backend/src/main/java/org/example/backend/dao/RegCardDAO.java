@@ -41,14 +41,26 @@ public class RegCardDAO {
     public void update(int id, RegCard updatedRegCard) {
         Session session = sessionFactory.getCurrentSession();
         RegCard cardToBeUpdated = session.get(RegCard.class, id);
-        cardToBeUpdated.setDocumentIntroNumber(updatedRegCard.getDocumentIntroNumber());
-        cardToBeUpdated.setDocumentExternNumber(updatedRegCard.getDocumentExternNumber());
-        cardToBeUpdated.setDateExtern(updatedRegCard.getDateExtern());
+
+        if (cardToBeUpdated != null) {
+            cardToBeUpdated.setDocumentIntroNumber(updatedRegCard.getDocumentIntroNumber());
+            cardToBeUpdated.setDocumentExternNumber(updatedRegCard.getDocumentExternNumber());
+            cardToBeUpdated.setDateExtern(updatedRegCard.getDateExtern());
+            session.update(cardToBeUpdated);
+        } else {
+            throw new IllegalArgumentException("RegCard with ID " + id + " not found");
+        }
     }
 
     @Transactional
     public void delete(int id) {
         Session session = sessionFactory.getCurrentSession();
-        session.remove(session.get(RegCard.class, id));
+        RegCard cardToBeDeleted = session.get(RegCard.class, id);
+
+        if (cardToBeDeleted != null) {
+            session.remove(cardToBeDeleted);
+        } else {
+            throw new IllegalArgumentException("RegCard with ID " + id + " not found");
+        }
     }
 }

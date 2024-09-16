@@ -1,6 +1,7 @@
 package org.example.backend.service;
 
 import org.example.backend.dao.DocumentVersionDAO;
+import org.example.backend.model.Document;
 import org.example.backend.model.DocumentVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,14 +30,19 @@ public class DocumentVersionService {
         return documentVersionDAO.show(id);
     }
 
-    public void saveDocument(MultipartFile file, String documentName, String documentNumber) throws IOException {
+    @Transactional
+    public void saveDocument(MultipartFile file,
+                             String versionAuthor,
+                             Document document) throws IOException {
+        if (file.isEmpty() || versionAuthor == null || document == null) {
+            throw new IllegalArgumentException("Invalid input data");
+        }
+
         DocumentVersion documentVersion = new DocumentVersion();
         documentVersion.setContent(file.getBytes());
+        documentVersion.setVersionAuthor(versionAuthor);
+        documentVersion.setDocument(document);
         documentVersionDAO.save(documentVersion);
-    }
-
-    public DocumentVersion getDocumentById(int id) {
-        return documentVersionDAO.show(id);
     }
 
     @Transactional
@@ -45,7 +51,8 @@ public class DocumentVersionService {
     }
 
     @Transactional
-    public void update(int id, DocumentVersion updatedDocumentVersion) {
+    public void update(int id,
+                       DocumentVersion updatedDocumentVersion) {
         documentVersionDAO.update(id, updatedDocumentVersion);
     }
 

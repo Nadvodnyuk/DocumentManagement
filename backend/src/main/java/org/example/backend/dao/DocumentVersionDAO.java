@@ -41,13 +41,26 @@ public class DocumentVersionDAO {
     public void update(int id, DocumentVersion updatedDocumentVersion) {
         Session session = sessionFactory.getCurrentSession();
         DocumentVersion versionToBeUpdated = session.get(DocumentVersion.class, id);
-        versionToBeUpdated.setVersionAuthor(updatedDocumentVersion.getVersionAuthor());
-        versionToBeUpdated.setContent(updatedDocumentVersion.getContent());
+
+        if (versionToBeUpdated != null) {
+            versionToBeUpdated.setVersionAuthor(updatedDocumentVersion.getVersionAuthor());
+            versionToBeUpdated.setContent(updatedDocumentVersion.getContent());
+
+            session.update(versionToBeUpdated);
+        } else {
+            throw new IllegalArgumentException("Document Version with ID " + id + " not found");
+        }
     }
+
 
     @Transactional
     public void delete(int id) {
         Session session = sessionFactory.getCurrentSession();
-        session.remove(session.get(DocumentVersion.class, id));
+        DocumentVersion versionToDelete = session.get(DocumentVersion.class, id);
+        if (versionToDelete != null) {
+            session.remove(versionToDelete);
+        } else {
+           throw new IllegalArgumentException("Document Version with ID " + id + " not found");
+        }
     }
 }
