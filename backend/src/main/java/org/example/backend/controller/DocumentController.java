@@ -43,6 +43,8 @@ public class DocumentController {
         }
     }
 
+
+    //!!!!!!!!! поменять, чтобы тут было с созданием новых экземпларов в docVer и regCard
     @PostMapping()
     public ResponseEntity<String> create(@RequestBody @Valid Document document, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

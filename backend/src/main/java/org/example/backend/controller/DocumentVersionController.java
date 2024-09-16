@@ -44,7 +44,8 @@ public class DocumentVersionController {
     }
 
     @PostMapping()
-    public ResponseEntity<String> create(@RequestBody @Valid DocumentVersion documentVersion, BindingResult bindingResult) {
+    public ResponseEntity<String> create(@RequestBody @Valid DocumentVersion documentVersion,
+                                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>("Invalid document version data", HttpStatus.BAD_REQUEST);
         }
@@ -58,7 +59,9 @@ public class DocumentVersionController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable("id") int id, @RequestBody @Valid DocumentVersion documentVersion, BindingResult bindingResult) {
+    public ResponseEntity<String> update(@PathVariable("id") int id,
+                                         @RequestBody @Valid DocumentVersion documentVersion,
+                                         BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>("Invalid document version data", HttpStatus.BAD_REQUEST);
         }
