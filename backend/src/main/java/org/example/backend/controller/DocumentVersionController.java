@@ -1,17 +1,22 @@
 package org.example.backend.controller;
 
+import org.apache.tika.Tika;
 import org.example.backend.dto.DocumentVersionCreateDTO;
 import org.example.backend.dto.DocumentVersionResponseDTO;
 import org.example.backend.model.DocumentVersion;
 import org.example.backend.service.DocumentVersionService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.*;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -55,6 +60,34 @@ public class DocumentVersionController {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/download/{id}")
+    public ResponseEntity<Resource> downloadDocumentVersion(@PathVariable int id,
+                                                            HttpServletResponse response) throws IOException {
+        DocumentVersionResponseDTO documentVersionResponseDTO = documentVersionService.findById(id);
+
+        if (documentVersionResponseDTO == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        byte[] content = documentVersionResponseDTO.getContent();
+        if (content == null || content.length == 0) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+
+        Tika tika = new Tika();
+        String mimeType = tika.detect(content);
+
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(content);
+        InputStreamResource resource = new InputStreamResource(inputStream);
+
+        String fileName = documentVersionResponseDTO.getDocument().getDocumentName()+ "_" + id;
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(mimeType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .body(resource);
     }
 
     @PostMapping()
