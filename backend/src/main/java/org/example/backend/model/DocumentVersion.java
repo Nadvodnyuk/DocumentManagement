@@ -18,7 +18,7 @@ public class DocumentVersion {
 
     @Column(name = "versionAuthor")
     @NotEmpty(message = "Author's login should not be empty")
-    @Size(min = 2, max =50, message = "Author's login should be between 2 and 50 characters")
+    @Size(min = 2, max = 50, message = "Author's login should be between 2 and 50 characters")
     private String versionAuthor;
 
     @Lob

@@ -1,5 +1,6 @@
 package org.example.backend.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import org.example.backend.model.Document;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
@@ -12,11 +13,14 @@ public class RegCardResponseDTO {
     @NotEmpty(message = "documentIntroNumber should not be empty")
     private String documentIntroNumber;
 
-    @NotEmpty(message = "documentExternNumber should not be empty")
+
     private String documentExternNumber;
 
+    @NotEmpty(message = "dateIntro should not be empty")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateIntro;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateExtern;
 
     public int getRegCardId() {

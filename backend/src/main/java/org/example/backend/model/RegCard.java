@@ -1,5 +1,7 @@
 package org.example.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
@@ -21,13 +23,14 @@ public class RegCard {
     private String documentIntroNumber;
 
     @Column(name = "documentExternNumber")
-    @NotEmpty(message = "documentExternNumber should not be empty")
     private String documentExternNumber;
 
     @Column(name = "dateIntro")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateIntro;
 
     @Column(name = "dateExtern")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime dateExtern;
 
     public RegCard() {

@@ -23,6 +23,7 @@ public class DocumentService {
     @Transactional(readOnly = true)
     public List<DocumentResponseDTO> findAll() {
         List<Document> documents = documentDAO.index();
+        System.out.println(documents);
         return documents.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -31,6 +32,7 @@ public class DocumentService {
     @Transactional(readOnly = true)
     public DocumentResponseDTO findById(int id) {
         Document document = documentDAO.show(id);
+        System.out.println(document);
         return convertToDTO(document);
     }
 

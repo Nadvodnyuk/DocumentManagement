@@ -1,6 +1,7 @@
 package org.example.backend.controller;
 
 import org.example.backend.dto.DocumentVersionCreateDTO;
+import org.example.backend.dto.DocumentVersionResponseDTO;
 import org.example.backend.model.DocumentVersion;
 import org.example.backend.service.DocumentVersionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,10 +25,10 @@ public class DocumentVersionController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<DocumentVersion>> index() {
+    public ResponseEntity<List<DocumentVersionResponseDTO>> index() {
         try {
-            List<DocumentVersion> documentVersions = documentVersionService.findAll();
-            return new ResponseEntity<>(documentVersions, HttpStatus.OK);
+            List<DocumentVersionResponseDTO> documentVersionResponseDTO = documentVersionService.findAll();
+            return new ResponseEntity<>(documentVersionResponseDTO, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -35,10 +36,21 @@ public class DocumentVersionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DocumentVersion> show(@PathVariable("id") int id) {
+    public ResponseEntity<DocumentVersionResponseDTO> show(@PathVariable("id") int id) {
         try {
-            DocumentVersion documentVersion = documentVersionService.findById(id);
-            return new ResponseEntity<>(documentVersion, HttpStatus.OK);
+            DocumentVersionResponseDTO documentVersionResponseDTO = documentVersionService.findById(id);
+            return new ResponseEntity<>(documentVersionResponseDTO, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/byDocument/{documentId}")
+    public ResponseEntity<List<DocumentVersionResponseDTO>> findByDocumentId(@PathVariable("documentId") int documentId) {
+        try {
+            List<DocumentVersionResponseDTO> documentVersionResponseDTO = documentVersionService.findByDocumentId(documentId);
+            return new ResponseEntity<>(documentVersionResponseDTO, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -47,7 +59,7 @@ public class DocumentVersionController {
 
     @PostMapping()
     public ResponseEntity<String> create(@RequestParam("file") MultipartFile file,
-                                         @RequestBody @Valid DocumentVersionCreateDTO documentVersionCreateDTO,
+                                         @ModelAttribute @Valid DocumentVersionCreateDTO documentVersionCreateDTO,
                                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>("Invalid document version data", HttpStatus.BAD_REQUEST);

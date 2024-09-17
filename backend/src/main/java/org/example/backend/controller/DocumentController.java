@@ -3,20 +3,21 @@ package org.example.backend.controller;
 import org.example.backend.dto.DocumentCreateDTO;
 import org.example.backend.dto.DocumentResponseDTO;
 import org.example.backend.model.Document;
-import org.example.backend.service.DocumentService;
-import org.example.backend.service.DocumentVersionService;
-import org.example.backend.service.RegCardService;
+import org.example.backend.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.annotation.MultipartConfig;
 import javax.validation.Valid;
 import java.util.List;
 
 @RestController
+@MultipartConfig
 @RequestMapping("/documents")
 public class DocumentController {
     private final DocumentService documentService;
@@ -55,9 +56,9 @@ public class DocumentController {
     }
 
 
-    @PostMapping()
-    public ResponseEntity<String> create(@RequestParam("file") MultipartFile file,
-                                         @RequestBody @Valid DocumentCreateDTO documentCreateDTO,
+    @PostMapping(consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
+    public ResponseEntity<String> create(@RequestPart("file") MultipartFile file,
+                                         @ModelAttribute @Valid DocumentCreateDTO documentCreateDTO,
                                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>("Invalid document data", HttpStatus.BAD_REQUEST);

@@ -36,10 +36,10 @@ public class RegCardController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RegCard> show(@PathVariable("id") int id) {
+    public ResponseEntity<RegCardResponseDTO> show(@PathVariable("id") int id) {
         try {
-            RegCard regCard = regCardService.findById(id);
-            return new ResponseEntity<>(regCard, HttpStatus.OK);
+            RegCardResponseDTO regCardResponseDTO = regCardService.findById(id);
+            return new ResponseEntity<>(regCardResponseDTO, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
@@ -62,7 +62,6 @@ public class RegCardController {
     }
 
 
-
     @PostMapping()
     public ResponseEntity<String> create(@RequestBody @Valid RegCard regCard, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -77,14 +76,15 @@ public class RegCardController {
         }
     }
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<String> update(@RequestBody @Valid RegCardUpdateDTO regCardUpdateDTO,
+    @PatchMapping("/{regCardId}")
+    public ResponseEntity<String> update(@PathVariable("regCardId") int regCardId,
+                                         @RequestBody @Valid RegCardUpdateDTO regCardUpdateDTO,
                                          BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return new ResponseEntity<>("Invalid registration card data", HttpStatus.BAD_REQUEST);
         }
         try {
-            regCardService.update(regCardUpdateDTO.getRegCardId(), regCardUpdateDTO);
+            regCardService.update(regCardId, regCardUpdateDTO);
             return new ResponseEntity<>("Registration card updated successfully", HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();

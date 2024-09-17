@@ -47,8 +47,10 @@ public class RegCardService {
     }
 
     @Transactional(readOnly = true)
-    public RegCard findById(int id) {
-        return regCardDAO.show(id);
+    public RegCardResponseDTO findById(int id) {
+        RegCard regCard = regCardDAO.show(id);
+        System.out.println(regCard);
+        return convertToDTO(regCard);
     }
 
     @Transactional(readOnly = true)
@@ -88,7 +90,7 @@ public class RegCardService {
     public void update(int id, RegCardUpdateDTO regCardUpdateDTO) {
         RegCard regCard = regCardDAO.show(id);
         regCard.setDocumentExternNumber(regCardUpdateDTO.getDocumentExternNumber());
-        regCard.setDateExtern(regCardUpdateDTO.getDateExtern());
+        regCard.setDateExtern(LocalDateTime.now());
         regCardDAO.update(id, regCard);
     }
 

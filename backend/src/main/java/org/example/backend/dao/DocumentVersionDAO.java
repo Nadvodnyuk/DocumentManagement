@@ -37,6 +37,15 @@ public class DocumentVersionDAO {
         session.save(documentVersion);
     }
 
+    @Transactional(readOnly = true)
+    public List<DocumentVersion> findByDocumentId(int documentId) {
+        Session session = sessionFactory.getCurrentSession();
+        String hql = "FROM DocumentVersion WHERE document.documentId = :documentId";
+        return session.createQuery(hql, DocumentVersion.class)
+                .setParameter("documentId", documentId)
+                .getResultList();
+    }
+
     @Transactional
     public void update(int id, DocumentVersion updatedDocumentVersion) {
         Session session = sessionFactory.getCurrentSession();
