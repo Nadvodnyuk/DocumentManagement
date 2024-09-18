@@ -1,3 +1,11 @@
 .sub_header {
   height: 110px;
 }
+
+.title{
+  margin: 5px 0 15px 0;
+}
+
+.wrapper{
+  margin: 0 40px 0 40px;
+}
