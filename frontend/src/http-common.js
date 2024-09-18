@@ -7,7 +7,7 @@ const instance = axios.create({
     // "Content-type": "application/json",
     Accept: "application/json",
   },
-  responseType: "blob",
+  // responseType: "blob",
 });
 
 export default instance;

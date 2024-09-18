@@ -1,32 +1,79 @@
-<script setup>
-</script>
-
 <template>
-  <div class="sub_header"></div>
-
+  <div class="table-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Название документа</th>
+          <th>Входящий номер документа</th>
+          <th>Дата поступления</th>
+          <th>Информация</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="regCard in regCards" :key="regCard.regCardId">
+          <td>{{ regCard.document.documentName }}</td>
+          <td>{{ regCard.documentIntroNumber }}</td>
+          <td>{{ regCard.dateIntro }}</td>
+          <td>
+            <router-link
+              :to="{ name: 'info', params: { id: regCard.regCardId } }"
+            >
+              Посмотреть информацию
+            </router-link>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </template>
 
 <script>
-import { useCatalog } from "../../store/catalog.js";
-import { mapState, mapActions } from "pinia";
 import HomeDataService from "../../services/HomeDataService";
 
 export default {
-  name: "App",
+  name: "Home",
   data() {
     return {
-
+      regCards: [],
     };
   },
-  computed: {
-    ...mapState(useCatalog, []),
-
+  mounted() {
+    this.fetchRegCards();
   },
   methods: {
-    ...mapActions(useCatalog, []),
-
-  }
+    async fetchRegCards() {
+      try {
+        const response = await HomeDataService.getAll();
+        console.log(response.data);
+        this.regCards = response.data;
+      } catch (error) {
+        console.error("Ошибка при получении данных:", error);
+      }
+    },
+  },
 };
 </script>
 
-<style scoped src="./home.css"></style>
+<style scoped>
+.table-container {
+  display: flex;
+  justify-content: center;
+  padding: 1em;
+}
+
+table {
+  width: 80%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+th {
+  background-color: #f2f2f2;
+  text-align: left;
+}
+</style>

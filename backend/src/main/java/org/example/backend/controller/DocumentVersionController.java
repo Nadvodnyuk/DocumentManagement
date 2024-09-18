@@ -21,6 +21,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/documentVersions")
+@CrossOrigin(origins = "http://localhost:5173")
 public class DocumentVersionController {
     private final DocumentVersionService documentVersionService;
 

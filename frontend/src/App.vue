@@ -3,12 +3,26 @@ import NavBar from "./components/NavBar.vue";
 </script>
 
 <template>
-  <div>
-    <NavBar msg="DocumentManagement" />
+  <div class="wrapper">
+    <NavBar />
+
+    <div class="body">
+      <router-view />
+    </div>
   </div>
 </template>
 
 <style scoped>
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.body {
+  flex: 1;
+  padding: 1em;
+}
 .logo {
   height: 6em;
   padding: 1.5em;

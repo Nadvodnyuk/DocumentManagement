@@ -1,9 +1,10 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
-  <div class="sub_header"></div>
-
+  <div>
+    <div class="sub_header"></div>
+    {{ id }}
+  </div>
 </template>
 
 <script>
@@ -13,19 +14,16 @@ import InfoDataService from "../../services/InfoDataService";
 
 export default {
   name: "Info",
+  props: ["id"],
   data() {
-    return {
-
-    };
+    return {};
   },
   computed: {
     ...mapState(useCatalog, []),
-
   },
   methods: {
     ...mapActions(useCatalog, []),
-
-  }
+  },
 };
 </script>
 

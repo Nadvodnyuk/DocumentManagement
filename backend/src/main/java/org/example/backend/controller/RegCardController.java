@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/regCards")
+@CrossOrigin(origins = "http://localhost:5173")
 public class RegCardController {
     private final RegCardService regCardService;
 

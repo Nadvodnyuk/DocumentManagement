@@ -1,9 +1,12 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
-  <div class="sub_header"></div>
-
+  <div>
+    <div class="sub_header"></div>
+    <div>
+      <p>Создать новый документ</p>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -14,18 +17,14 @@ import NewDocDataService from "../../services/NewDocDataService";
 export default {
   name: "NewDoc",
   data() {
-    return {
-
-    };
+    return {};
   },
   computed: {
     ...mapState(useCatalog, []),
-
   },
   methods: {
     ...mapActions(useCatalog, []),
-
-  }
+  },
 };
 </script>
 
