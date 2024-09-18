@@ -13,7 +13,7 @@ class InfoDataService {
 
   //docVer download
   downloadDocumentVersion(id) {
-    return axios.get(`/documentVersions/download/${id}`, {
+    return http.get(`/documentVersions/download/${id}`, {
       responseType: 'blob',
     });
   }

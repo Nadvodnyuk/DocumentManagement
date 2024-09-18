@@ -17,7 +17,11 @@
             :key="version.documentVersionId"
           >
             <td>Версия {{ documentVersions.length - index }}</td>
-            <td>Скачать</td>
+            <td>
+              <button @click="downloadVersion(version.documentVersionId, documentVersions.length - index)">
+                Скачать
+              </button>
+            </td>
           </tr>
         </tbody>
       </table>
@@ -40,13 +44,27 @@
           <strong>Дата снятия с учета :</strong>
           {{ formatDate(regCard.dateExtern) }}
         </p>
-        <router-link
-          v-show="!regCard.dateExtern"
-          :to="{ name: 'Deregister', params: { id: regCard.regCardId } }"
-          class="btn btn-danger"
-        >
-          Снять с учёта
-        </router-link>
+        <div class="mb">
+          <router-link
+            v-show="!regCard.dateExtern"
+            :to="{
+              name: 'NewVersion',
+              params: { id: regCard.document.documentId },
+            }"
+            class="btn btn-primary"
+          >
+            Загрузить новую версию
+          </router-link>
+        </div>
+        <div class="mb">
+          <router-link
+            v-show="!regCard.dateExtern"
+            :to="{ name: 'Deregister', params: { id: regCard.regCardId } }"
+            class="btn btn-danger"
+          >
+            Снять с учёта
+          </router-link>
+        </div>
       </div>
       <p v-else>Загрузка...</p>
     </div>
@@ -101,6 +119,34 @@ export default {
       };
       return new Date(date).toLocaleDateString("ru-RU", options);
     },
+    async downloadVersion(versionId, version) {
+      try {
+        const response = await InfoDataService.downloadDocumentVersion(versionId);
+
+        const blob = new Blob([response.data], { type: response.headers['content-type'] });
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+
+        const contentDisposition = response.headers['content-disposition'];
+        let fileName = this.regCard?.document?.documentName + "_" + version;
+        console.log(contentDisposition)
+        if (contentDisposition) {
+          const fileNameMatch = contentDisposition.match(/filename="(.+)"/);
+          if (fileNameMatch && fileNameMatch[1]) {
+            fileName = fileNameMatch[1];
+          }
+        }
+
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error("Ошибка при скачивании версии документа:", error);
+      }
+    }
   },
 };
 </script>

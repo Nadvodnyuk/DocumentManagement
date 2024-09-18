@@ -42,7 +42,7 @@ export default {
       try {
         await DeregisterDataService.updateRegCard(this.id, this.documentData);
         alert("Документ успешно снят с учёта");
-        this.$router.push({ name: 'Info', params: { id: this.id } });
+        this.$router.push({ name: "Info", params: { id: this.id } });
       } catch (error) {
         console.error("Ошибка при снятии с учёта:", error);
         alert("Ошибка при снятии с учета");

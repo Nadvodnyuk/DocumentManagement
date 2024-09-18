@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -83,7 +84,19 @@ public class DocumentVersionController {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(content);
         InputStreamResource resource = new InputStreamResource(inputStream);
 
-        String fileName = documentVersionResponseDTO.getDocument().getDocumentName()+ "_" + id;
+        List<DocumentVersionResponseDTO> allVersions = documentVersionService.findByDocumentId(documentVersionResponseDTO.getDocument().getDocumentId());
+
+        allVersions.sort(Comparator.comparingInt(DocumentVersionResponseDTO::getDocumentVersionId));
+
+        int versionNumber = 0;
+        for (int i = 0; i < allVersions.size(); i++) {
+            if (allVersions.get(i).getDocumentVersionId() == id) {
+                versionNumber = i + 1;
+                break;
+            }
+        }
+
+        String fileName = documentVersionResponseDTO.getDocument().getDocumentName()+ "_" + versionNumber;
 
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(mimeType))
