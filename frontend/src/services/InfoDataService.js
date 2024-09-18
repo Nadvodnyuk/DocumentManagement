@@ -5,11 +5,6 @@ class InfoDataService {
   async getRegCard(id) {
     return http.get(`/regCards/${id}`);
   }
-  
-  //regCard update
-  async updateRegCard(id, data) {
-    return http.put(`/regCards/${id}`, data);
-  }
 
   //docVer getAllByDocId
   async getDocVerByDocId(id) {

@@ -102,6 +102,7 @@ export default {
         };
         await NewDocDataService.createDocument(this.file, documentToSubmit);
         alert("Документ успешно создан");
+        this.$router.push('/');
       } catch (error) {
         console.error("Ошибка при создании документа:", error);
         alert("Ошибка при создании документа");

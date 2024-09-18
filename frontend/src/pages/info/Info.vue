@@ -1,28 +1,106 @@
-<script setup></script>
-
 <template>
-  <div>
-    <div class="sub_header"></div>
-    {{ id }}
+  <div class="container">
+    <div class="left-pane">
+      <h3 class="title">
+        {{ regCard?.document?.documentName || "Документ не найден" }}
+      </h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Версия</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(version, index) in documentVersions"
+            :key="version.documentVersionId"
+          >
+            <td>Версия {{ documentVersions.length - index }}</td>
+            <td>Скачать</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="right-pane">
+      <div v-if="regCard" class="regCard">
+        <p>
+          <strong>Входящий номер документа:</strong>
+          {{ regCard.documentIntroNumber }}
+        </p>
+        <p v-show="regCard.documentExternNumber">
+          <strong>Исходящий номер документа:</strong>
+          {{ regCard.documentExternNumber }}
+        </p>
+        <p>
+          <strong>Дата поступления:</strong> {{ formatDate(regCard.dateIntro) }}
+        </p>
+        <p v-show="regCard.dateExtern">
+          <strong>Дата снятия с учета :</strong>
+          {{ formatDate(regCard.dateExtern) }}
+        </p>
+        <router-link
+          v-show="!regCard.dateExtern"
+          :to="{ name: 'Deregister', params: { id: regCard.regCardId } }"
+          class="btn btn-danger"
+        >
+          Снять с учёта
+        </router-link>
+      </div>
+      <p v-else>Загрузка...</p>
+    </div>
   </div>
 </template>
 
 <script>
-import { useCatalog } from "../../store/catalog.js";
-import { mapState, mapActions } from "pinia";
 import InfoDataService from "../../services/InfoDataService";
 
 export default {
   name: "Info",
   props: ["id"],
   data() {
-    return {};
+    return {
+      documentVersions: [],
+      regCard: null,
+    };
   },
-  computed: {
-    ...mapState(useCatalog, []),
+  created() {
+    this.fetchDocumentVersions();
+    this.fetchRegCard();
   },
   methods: {
-    ...mapActions(useCatalog, []),
+    async fetchDocumentVersions() {
+      try {
+        const response = await InfoDataService.getDocVerByDocId(this.id);
+        this.documentVersions = response.data.sort(
+          (a, b) => b.documentVersionId - a.documentVersionId
+        );
+      } catch (error) {
+        console.error("Error fetching document versions:", error);
+        this.documentVersions = [];
+      }
+    },
+    async fetchRegCard() {
+      try {
+        const response = await InfoDataService.getRegCard(this.id);
+        this.regCard = response.data;
+      } catch (error) {
+        console.error("Error fetching registration card:", error);
+        this.regCard = null;
+      }
+    },
+    formatDate(date) {
+      if (!date) return "";
+      const options = {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      };
+      return new Date(date).toLocaleDateString("ru-RU", options);
+    },
   },
 };
 </script>

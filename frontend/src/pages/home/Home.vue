@@ -16,7 +16,7 @@
           <td>{{ regCard.dateIntro }}</td>
           <td>
             <router-link
-              :to="{ name: 'info', params: { id: regCard.regCardId } }"
+              :to="{ name: 'Info', params: { id: regCard.regCardId } }"
             >
               Посмотреть информацию
             </router-link>
@@ -45,7 +45,7 @@ export default {
       try {
         const response = await HomeDataService.getAll();
         console.log(response.data);
-        this.regCards = response.data;
+        this.regCards = response.data.sort((a, b) => b.regCardId - a.regCardId);
       } catch (error) {
         console.error("Ошибка при получении данных:", error);
       }
