@@ -89,7 +89,7 @@ public class DocumentVersionService {
         DocumentVersion documentVersion = new DocumentVersion();
 
         documentVersion.setContent(file.getBytes());
-        documentVersion.setVersionAuthor(document.getAuthor());
+        documentVersion.setVersionAuthor(documentVersionCreateDTO.getVersionAuthor());
         documentVersion.setDocument(document);
 
         documentVersionDAO.save(documentVersion);

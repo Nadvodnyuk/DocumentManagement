@@ -10,6 +10,7 @@
           type="text"
           v-model="documentData.documentName"
           class="form-control"
+          minlength="2"
           required
         />
       </div>
@@ -21,6 +22,7 @@
           v-model="documentData.author"
           class="form-control"
           required
+          minlength="2"
         />
       </div>
 

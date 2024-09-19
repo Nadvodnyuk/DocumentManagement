@@ -8,6 +8,7 @@
         <thead>
           <tr>
             <th>Версия</th>
+            <th>Автор версии</th>
             <th></th>
           </tr>
         </thead>
@@ -17,6 +18,7 @@
             :key="version.documentVersionId"
           >
             <td>Версия {{ documentVersions.length - index }}</td>
+            <td>{{ version.versionAuthor}}</td>
             <td>
               <button @click="downloadVersion(version.documentVersionId, documentVersions.length - index)">
                 Скачать

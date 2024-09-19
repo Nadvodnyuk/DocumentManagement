@@ -5,6 +5,10 @@
     <h3 class="title">Загрузить новую версию документа</h3>
     <form @submit.prevent="submitForm" enctype="multipart/form-data">
       <div class="mb-3">
+        <label for="author" class="form-label">Автор</label>
+        <input type="text" v-model="author" class="form-control" required minlength="2"/>
+      </div>
+      <div class="mb-3">
         <label for="file" class="form-label">Загрузить файл</label>
         <input
           type="file"
@@ -28,6 +32,7 @@ export default {
   data() {
     return {
       file: null,
+      author: "",
     };
   },
   methods: {
@@ -38,6 +43,7 @@ export default {
       try {
         const documentToSubmit = {
           documentId: this.id,
+          versionAuthor: this.author
         };
         await NewVersionDataService.createDocumentVersion(
           this.file,
