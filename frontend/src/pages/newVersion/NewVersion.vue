@@ -20,8 +20,6 @@
 </template>
 
 <script>
-import { useCatalog } from "../../store/catalog.js";
-import { mapState, mapActions } from "pinia";
 import NewVersionDataService from "../../services/NewVersionDataService";
 
 export default {
@@ -32,11 +30,7 @@ export default {
       file: null,
     };
   },
-  computed: {
-    ...mapState(useCatalog, []),
-  },
   methods: {
-    ...mapActions(useCatalog, []),
     handleFileChange(event) {
       this.file = event.target.files[0];
     },

@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/regCards")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5000")
 public class RegCardController {
     private final RegCardService regCardService;
 
@@ -46,22 +46,6 @@ public class RegCardController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
-
-
-    // скорее всего не нужно, это до тестов
-    @GetMapping("/document/{documentId}")
-    public ResponseEntity<?> findByDocumentId(@PathVariable("documentId") int documentId) {
-        try {
-            RegCardResponseDTO regCardDTO = regCardService.findByDocumentId(documentId);
-            return new ResponseEntity<>(regCardDTO, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new ResponseEntity<>("Internal Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
 
     @PostMapping()
     public ResponseEntity<String> create(@RequestBody @Valid RegCard regCard, BindingResult bindingResult) {

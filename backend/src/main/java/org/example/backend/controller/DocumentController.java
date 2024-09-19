@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @MultipartConfig
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "http://localhost:5000")
 @RequestMapping("/documents")
 public class DocumentController {
     private final DocumentService documentService;

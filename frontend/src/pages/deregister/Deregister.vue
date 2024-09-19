@@ -22,8 +22,6 @@
 </template>
 
 <script>
-import { useCatalog } from "../../store/catalog.js";
-import { mapState, mapActions } from "pinia";
 import DeregisterDataService from "../../services/DeregisterDataService";
 
 export default {
